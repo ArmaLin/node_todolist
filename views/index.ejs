@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>
+    <%= xx %>
+  </title>
+  <!-- <link rel='stylesheet' href='../public/stylesheets/style.css' /> -->
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <p>
+
+  </p>
+  <form name="form" method="post" id="myForm" action="todo">
+    <table border="1">
+      <tr>
+        <td>&nbsp;</td>
+        <td>姓名</td>
+        <td>待辦事項</td>
+        <td>日期</td>
+        <td>修改</td>
+        <td>刪除</td>
+      </tr>
+      <% for(var i=0; i < todoList.length; i++) {%>
+        <tr>
+          <td>
+            <%- i %>
+          </td>
+          <td>
+            <%- todoList[i].user_id %>
+          </td>
+          <td>
+            <input type="text" value="<%- todoList[i].content %>" id="value<%- i %>">
+          </td>
+          <td>
+            <%- todoList[i].updated_at %>
+          </td>
+
+          <td>
+            <input type="button" value="修改 " onclick="goEdit( '<%- todoList[i]._id%>','<%- i %>') ">
+          </td>
+
+          <td>
+            <input type="button" value="刪除 " onclick="goDel( '<%- todoList[i]._id%>') ">
+          </td>
+        </tr>
+        <% } %>
+    </table>
+    新增:
+    <br> 待辦事項:
+    <input type="text" id="content" name="content" value="">
+    <input name="Submit" type="submit" value="新增">
+  </form>
+</body>
+
+<script type="text/javascript ">
+  function goDel(id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/todo/' + id, true);
+    xhr.send();
+
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState == 4){
+        if((xhr.status >=200 && xhr.status < 300) || xhr.status == 304){
+          window.location.reload();
+         //   alert(xhr.responseText);
+        }else{
+        //  alert("Request was unsucessful:" + xhr.status);
+        }	
+      }
+    };
+  }
+
+  function goEdit(id,i) {
+    var content = document.getElementById('value'+i).value;
+   
+    var xhr = new XMLHttpRequest(); 
+
+    xhr.open('PUT', '/todo/' + id, true);
+    
+    //post put
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState == 4){
+        if((xhr.status >=200 && xhr.status < 300) || xhr.status == 304){
+          window.location.reload();
+         //   alert(xhr.responseText);
+        }else{
+        //  alert("Request was unsucessful:" + xhr.status);
+        }	
+      }
+    };
+
+    xhr.send("content="+content);
+  }
+</script>
+
+</html>
